@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-LKPD Interaktif: Menguak Rahasia Fungsi Invers</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                        },
+                        accent: {
+                            50: '#fffbeb',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- KaTeX for Beautiful Math Equations -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMath()"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .tab-btn.active {
+            border-bottom: 3px solid #0d9488;
+            color: #0d9488;
+            font-weight: 700;
+        }
+        .animate-pulse-subtle {
+            animation: pulseSubtle 2s infinite ease-in-out;
+        }
+        @keyframes pulseSubtle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+
+    <!-- NAVIGATION & HEADER -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-brand-600 text-white p-2.5 rounded-xl shadow-md flex items-center justify-center">
+                    <i data-lucide="cpu" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-brand-100 text-brand-800 text-xs font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">E-LKPD Fase F</span>
+                        <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                            <i data-lucide="sparkles" class="w-3 h-3"></i> Panca Cinta: Cinta Ilmu
+                        </span>
+                    </div>
+                    <h1 class="text-lg font-bold text-slate-900 leading-tight">De-Coder Fungsi Invers</h1>
+                </div>
+            </div>
+
+            <!-- Progress Tracker -->
+            <div class="flex items-center gap-4 w-full sm:w-auto">
+                <div class="flex-1 sm:w-48 bg-slate-100 rounded-full h-3.5 p-0.5 border border-slate-200 overflow-hidden">
+                    <div id="progress-bar" class="bg-gradient-to-r from-brand-500 to-brand-700 h-full rounded-full transition-all duration-500 w-0"></div>
+                </div>
+                <span id="progress-text" class="text-xs font-bold text-brand-700 min-w-[3.5rem]">0% Selesai</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow space-y-8">
+
+        <!-- STUDENT IDENTITIES CARD -->
+        <section class="glass-card rounded-2xl p-6 shadow-sm border border-slate-200">
+            <div class="flex items-center gap-3 mb-4 pb-3 border-b border-slate-100">
+                <i data-lucide="user-check" class="w-5 h-5 text-brand-600"></i>
+                <h2 class="text-base font-bold text-slate-800">Identitas Siswa / Kelompok</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Lengkap Siswa</label>
+                    <input type="text" id="student-name" placeholder="Masukkan nama kamu..." class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Kelas & Jurusan</label>
+                    <input type="text" id="student-class" placeholder="Contoh: XI MIPA 1 / Fase F" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Kelompok (Opsional)</label>
+                    <input type="text" id="student-group" placeholder="Nama kelompok matematika..." class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition">
+                </div>
+            </div>
+        </section>
+
+        <!-- CYCLE STAGES NAVIGATION TABS -->
+        <nav class="flex border-b border-slate-200 overflow-x-auto no-scrollbar gap-2 bg-white p-2 rounded-2xl shadow-sm">
+            <button onclick="switchTab('stage1')" id="tab-stage1" class="tab-btn active px-4 py-3 flex items-center gap-2 text-sm font-medium whitespace-nowrap text-slate-600 hover:text-brand-600 transition rounded-xl">
+                <span class="w-6 h-6 rounded-full bg-brand-100 text-brand-700 text-xs font-bold flex items-center justify-center">1</span>
+                <span>Experiencing (Mengalami)</span>
+            </button>
+            <button onclick="switchTab('stage2')" id="tab-stage2" class="tab-btn px-4 py-3 flex items-center gap-2 text-sm font-medium whitespace-nowrap text-slate-600 hover:text-brand-600 transition rounded-xl">
+                <span class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-bold flex items-center justify-center">2</span>
+                <span>Reflecting (Refleksi)</span>
+            </button>
+            <button onclick="switchTab('stage3')" id="tab-stage3" class="tab-btn px-4 py-3 flex items-center gap-2 text-sm font-medium whitespace-nowrap text-slate-600 hover:text-brand-600 transition rounded-xl">
+                <span class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-bold flex items-center justify-center">3</span>
+                <span>Thinking (Konseptualisasi)</span>
+            </button>
+            <button onclick="switchTab('stage4')" id="tab-stage4" class="tab-btn px-4 py-3 flex items-center gap-2 text-sm font-medium whitespace-nowrap text-slate-600 hover:text-brand-600 transition rounded-xl">
+                <span class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-bold flex items-center justify-center">4</span>
+                <span>Acting (Menerapkan)</span>
+            </button>
+        </nav>
+
+        <!-- STAGE 1 CONTENT: EXPERIENCING -->
+        <div id="content-stage1" class="tab-content space-y-6">
+            <div class="bg-gradient-to-r from-brand-800 to-brand-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="max-w-3xl space-y-3">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full text-brand-200 text-xs font-semibold backdrop-blur-md">
+                        <i data-lucide="compass" class="w-4 h-4"></i> Tahap 1: Pengalaman Konkret
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Laboratorium Mesin Kebalikan (The Inverse Machine)</h2>
+                    <p class="text-slate-200 text-sm leading-relaxed">
+                        Bayangkan sebuah **Mesin Fungsi A** yang menerima angka masukan $x$, memprosesnya dengan rumus tertentu, dan mengeluarkan hasil $y$. Tugasmu adalah menemukan cara membalikkan proses tersebut dengan **Mesin Invers B** agar angka $y$ kembali menjadi $x$ semula!
+                    </p>
+                </div>
+            </div>
+
+            <!-- INTERACTIVE WIDGET: FUNCTION MACHINE LAB -->
+            <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-md border border-slate-200 space-y-6">
+                <div class="flex items-center justify-between flex-wrap gap-4 border-b border-slate-100 pb-4">
+                    <div>
+                        <h3 class="font-bold text-lg text-slate-800 flex items-center gap-2">
+                            <i data-lucide="sliders" class="w-5 h-5 text-brand-600"></i> Simulasi Interaktif Mesin Fungsi
+                        </h3>
+                        <p class="text-xs text-slate-500">Pilih aturan rumus fungsi, lalu uji coba input dan bongkar proses kebalikannya!</p>
+                    </div>
+                    <!-- Rule Selector -->
+                    <div class="flex items-center gap-2">
+                        <label class="text-xs font-semibold text-slate-600">Pilih Aturan Mesin:</label>
+                        <select id="machine-rule" onchange="updateMachineSimulation()" class="bg-slate-100 text-slate-800 text-xs font-semibold px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                            <option value="linear1">Aturan 1: f(x) = 2x + 4</option>
+                            <option value="linear2">Aturan 2: f(x) = 3x - 5</option>
+                            <option value="rational">Aturan 3: f(x) = (x + 6) / 2</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Simulation Visual Board -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center bg-slate-50/80 rounded-2xl p-6 border border-slate-200">
+                    <!-- Machine A (Forward) -->
+                    <div class="space-y-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full flex items-center gap-1">
+                                <i data-lucide="arrow-right-circle" class="w-3.5 h-3.5"></i> Mesin Utama $f(x)$
+                            </span>
+                            <span id="formula-display" class="text-sm font-bold text-slate-700">$f(x) = 2x + 4$</span>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-xs font-medium text-slate-600 flex justify-between">
+                                    <span>Masukkan Nilai Input ($x$):</span>
+                                    <span id="input-x-val" class="font-bold text-brand-700">5</span>
+                                </label>
+                                <input type="range" id="input-x" min="1" max="20" value="5" oninput="updateMachineSimulation()" class="w-full accent-brand-600 cursor-pointer">
+                            </div>
+
+                            <div class="p-3 bg-slate-100 rounded-xl flex items-center justify-between text-xs font-mono">
+                                <span class="text-slate-500">Proses Mesin A:</span>
+                                <span id="process-a-step" class="text-slate-800 font-semibold">(2 × 5) + 4</span>
+                            </div>
+
+                            <div class="p-4 bg-emerald-50 rounded-xl border border-emerald-200 text-center">
+                                <span class="text-xs text-emerald-600 font-medium block">Hasil Output ($y$):</span>
+                                <span id="output-y-val" class="text-2xl font-extrabold text-emerald-700">14</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Machine B (Inverse Challenge) -->
+                    <div class="space-y-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-amber-700 bg-amber-100 px-2.5 py-1 rounded-full flex items-center gap-1">
+                                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Mesin Kebalikan $f^{-1}(y)$
+                            </span>
+                            <span class="text-xs text-slate-400 font-mono">Misi: Kembalikan $y \to x$</span>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div class="p-3 bg-amber-50 rounded-xl border border-amber-200 text-center">
+                                <span class="text-xs text-amber-700 font-medium block">Nilai $y$ yang harus dikembalikan:</span>
+                                <span id="target-y-val" class="text-xl font-bold text-amber-800">14</span>
+                            </div>
+
+                            <!-- Interactive Reverse Steps Trial -->
+                            <div class="space-y-2">
+                                <label class="text-xs font-medium text-slate-600">Uji Coba Urutan Operasi Kebalikan:</label>
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <button onclick="applyReverseOp('sub_then_div')" id="op-btn-1" class="p-2.5 rounded-xl border text-center transition font-semibold border-slate-300 hover:bg-brand-50 hover:border-brand-400">
+                                        1. Kurangi dulu, lalu bagi
+                                    </button>
+                                    <button onclick="applyReverseOp('div_then_sub')" id="op-btn-2" class="p-2.5 rounded-xl border text-center transition font-semibold border-slate-300 hover:bg-brand-50 hover:border-brand-400">
+                                        2. Bagi dulu, lalu kurangi
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Result Verification Box -->
+                            <div id="reverse-result-box" class="p-3 rounded-xl border text-xs text-center transition bg-slate-100 border-slate-200 text-slate-600">
+                                Klik salah satu urutan operasi di atas untuk menguji kebenaran mesin invers!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center pt-4 border-t border-slate-100">
+                    <p class="text-xs text-slate-500 italic flex items-center gap-1">
+                        <i data-lucide="info" class="w-4 h-4 text-brand-600"></i> Amati perubahan tanda dan urutan operasi dari Mesin A ke Mesin B.
+                    </p>
+                    <button onclick="markStageComplete(1); switchTab('stage2');" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-md">
+                        Lanjut ke Tahap Refleksi <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STAGE 2 CONTENT: REFLECTING -->
+        <div id="content-stage2" class="tab-content hidden space-y-6">
+            <div class="bg-gradient-to-r from-amber-600 to-amber-700 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+                <div class="max-w-3xl space-y-3">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full text-amber-100 text-xs font-semibold backdrop-blur-md">
+                        <i data-lucide="message-square" class="w-4 h-4"></i> Tahap 2: Merefleksikan Pengalaman
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Dinding Refleksi & Diskusi Kelas</h2>
+                    <p class="text-amber-100 text-sm leading-relaxed">
+                        Berdasarkan eksperimen mesin yang baru saja kamu lakukan di Tahap 1, jawab pertanyaan analisis berikut untuk mengkristalkan pemahamanmu!
+                    </p>
+                </div>
+            </div>
+
+            <!-- REFLECTION INPUT FORM -->
+            <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-md border border-slate-200 space-y-6">
+                <form id="reflection-form" onsubmit="handleReflectionSubmit(event)" class="space-y-6">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-slate-800">
+                            1. Ketika nilai $x$ diproses menjadi $y$ pada Mesin A, operasi matematika apa saja yang terjadi?
+                        </label>
+                        <textarea id="ref-q1" required rows="3" placeholder="Contoh: Pada fungsi f(x)=2x+4, pertama nilai x dikali 2, lalu ditambah 4..." class="w-full p-3 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition"></textarea>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-slate-800">
+                            2. Saat membalikkan nilai $y$ kembali menjadi $x$, bagaimana urutan dan jenis operasi matematika yang kamu gunakan?
+                        </label>
+                        <textarea id="ref-q2" required rows="3" placeholder="Contoh: Operasi kebalikannya diubah dari tambah jadi kurang, lalu perkalian jadi pembagian. Urutannya juga dibalik..." class="w-full p-3 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition"></textarea>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-slate-800">
+                            3. **Refleksi Cinta Ilmu:** Menurutmu, mengapa ilmuwan dan matematikawan memerlukan fungsi kebalikan (invers) dalam memecahkan masalah nyata?
+                        </label>
+                        <textarea id="ref-q3" required rows="2" placeholder="Tuliskan pendapatmu tentang pentingnya sifat kebalikan dalam ilmu pengetahuan..." class="w-full p-3 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition"></textarea>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button type="submit" class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-xl text-xs font-bold flex items-center gap-2 shadow-md transition">
+                            <i data-lucide="send" class="w-4 h-4"></i> Kirim ke Dinding Refleksi Digital
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- DIGITAL WALL STREAM -->
+            <div class="space-y-4">
+                <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                    <i data-lucide="layout-grid" class="w-5 h-5 text-amber-600"></i> Postingan Refleksi Siswa / Kelompok
+                </h3>
+                <div id="reflection-wall-stream" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Sample Card -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                            <span class="font-bold text-xs text-brand-700 flex items-center gap-1">
+                                <i data-lucide="user" class="w-3.5 h-3.5"></i> Contoh Jawaban Guru
+                            </span>
+                            <span class="text-[10px] text-slate-400">Baru saja</span>
+                        </div>
+                        <p class="text-xs text-slate-600">
+                            <strong>Kesimpulan Awal:</strong> Fungsi invers bekerja seperti membongkar susunan lego. Langkah terakhir pada fungsi asli menjadi langkah pertama yang harus dilepas (dibalik) pada fungsi invers.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center pt-4 border-t border-slate-200">
+                <button onclick="switchTab('stage1')" class="text-xs font-bold text-slate-600 hover:text-slate-800 flex items-center gap-1">
+                    <i data-lucide="chevron-left" class="w-4 h-4"></i> Kembali ke Tahap 1
+                </button>
+                <button onclick="markStageComplete(2); switchTab('stage3');" class="bg-amber-600 hover:bg-amber-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-md">
+                    Lanjut ke Tahap Konseptualisasi <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- STAGE 3 CONTENT: THINKING / GENERALIZING -->
+        <div id="content-stage3" class="tab-content hidden space-y-6">
+            <div class="bg-gradient-to-r from-blue-800 to-indigo-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+                <div class="max-w-3xl space-y-3">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full text-blue-200 text-xs font-semibold backdrop-blur-md">
+                        <i data-lucide="brain-circuit" class="w-4 h-4"></i> Tahap 3: Berpikir & Konseptualisasi
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Algoritma Menentukan Rumus Fungsi Invers</h2>
+                    <p class="text-blue-100 text-sm leading-relaxed">
+                        Saatnya menarik kesimpulan teoritis ("So What?"). Mari kita formalisasikan pengalaman membalikkan mesin tadi menjadi alur aljabar yang runtut!
+                    </p>
+                </div>
+            </div>
+
+            <!-- INTERACTIVE ALGORITHM STEP BUILDER -->
+            <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-md border border-slate-200 space-y-6">
+                <div>
+                    <h3 class="font-bold text-lg text-slate-800 flex items-center gap-2">
+                        <i data-lucide="list-ordered" class="w-5 h-5 text-indigo-600"></i> Tantangan: Susun Ulang Langkah Sistematis
+                    </h3>
+                    <p class="text-xs text-slate-500">Klik langkah-langkah di bawah sesuai urutan matematika yang benar untuk mencari $f^{-1}(x)$!</p>
+                </div>
+
+                <!-- Step Pool -->
+                <div class="space-y-3">
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Pilihan Langkah Acak:</span>
+                    <div id="step-pool" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button onclick="selectStep('step-c')" id="step-c" class="p-3 bg-white border border-slate-300 rounded-xl text-xs font-medium text-left hover:border-indigo-500 transition shadow-sm flex items-center justify-between">
+                            <span>Ganti pemisalan $f(x)$ menjadi variabel $y$.</span>
+                            <i data-lucide="plus" class="w-4 h-4 text-slate-400"></i>
+                        </button>
+                        <button onclick="selectStep('step-a')" id="step-a" class="p-3 bg-white border border-slate-300 rounded-xl text-xs font-medium text-left hover:border-indigo-500 transition shadow-sm flex items-center justify-between">
+                            <span>Tukarkan variabel $y$ kembali menjadi $x$ untuk mendapatkan $f^{-1}(x)$.</span>
+                            <i data-lucide="plus" class="w-4 h-4 text-slate-400"></i>
+                        </button>
+                        <button onclick="selectStep('step-d')" id="step-d" class="p-3 bg-white border border-slate-300 rounded-xl text-xs font-medium text-left hover:border-indigo-500 transition shadow-sm flex items-center justify-between">
+                            <span>Lakukan manipulasi aljabar hingga diperoleh persamaan tunggal $x = g(y)$.</span>
+                            <i data-lucide="plus" class="w-4 h-4 text-slate-400"></i>
+                        </button>
+                        <button onclick="selectStep('step-b')" id="step-b" class="p-3 bg-white border border-slate-300 rounded-xl text-xs font-medium text-left hover:border-indigo-500 transition shadow-sm flex items-center justify-between">
+                            <span>Nyatakan bentuk $x$ sebagai fungsi dari $y$, yaitu $x = f^{-1}(y)$.</span>
+                            <i data-lucide="plus" class="w-4 h-4 text-slate-400"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Selected Sequence Drop Zone -->
+                <div class="space-y-3 pt-4 border-t border-slate-200">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-indigo-700 uppercase tracking-wider">Urutan Jawabanmu:</span>
+                        <button onclick="resetStepSequence()" class="text-xs text-red-600 hover:underline flex items-center gap-1">
+                            <i data-lucide="rotate-ccw" class="w-3 h-3"></i> Reset Urutan
+                        </button>
+                    </div>
+                    <div id="drop-zone" class="min-h-[120px] bg-slate-50 border-2 border-dashed border-slate-300 rounded-2xl p-4 space-y-2">
+                        <span id="drop-placeholder" class="text-xs text-slate-400 italic text-center block py-6">Klik opsi langkah di atas untuk memindahkannya ke sini secara urut...</span>
+                    </div>
+                    <div id="step-feedback" class="hidden p-3 rounded-xl text-xs font-semibold"></div>
+                </div>
+            </div>
+
+            <!-- MATH CONCEPT EXPLANATION & PANCA CINTA INSIGHT -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 glass-card rounded-3xl p-6 shadow-sm border border-slate-200 space-y-4">
+                    <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                        <i data-lucide="book-open" class="w-5 h-5 text-indigo-600"></i> Formulasi Matematis & Rumus Cepat
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                        <div class="p-4 bg-indigo-50/60 rounded-2xl border border-indigo-100 space-y-2">
+                            <span class="font-bold text-indigo-900 block">1. Fungsi Linear</span>
+                            <div class="bg-white p-3 rounded-xl border border-indigo-200 text-center space-y-1">
+                                <div>$f(x) = ax + b, \quad a \neq 0$</div>
+                                <div class="text-indigo-600 font-bold">$f^{-1}(x) = \dfrac{x - b}{a}$</div>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-blue-50/60 rounded-2xl border border-blue-100 space-y-2">
+                            <span class="font-bold text-blue-900 block">2. Fungsi Rasional</span>
+                            <div class="bg-white p-3 rounded-xl border border-blue-200 text-center space-y-1">
+                                <div>$f(x) = \dfrac{ax + b}{cx + d}, \quad x \neq -\dfrac{d}{c}$</div>
+                                <div class="text-blue-600 font-bold">$f^{-1}(x) = \dfrac{-dx + b}{cx - a}, \quad x \neq \dfrac{a}{c}$</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cinta Ilmu Card -->
+                <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl p-6 border border-amber-200 shadow-sm flex flex-col justify-between space-y-4">
+                    <div class="space-y-2">
+                        <span class="bg-amber-200 text-amber-900 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider inline-flex items-center gap-1">
+                            <i data-lucide="heart" class="w-3 h-3 text-amber-700"></i> Integrasi Cinta Ilmu
+                        </span>
+                        <h4 class="font-bold text-slate-900 text-sm">Keindahan Ketelitian Matematika</h4>
+                        <p class="text-xs text-slate-700 leading-relaxed">
+                            Mencintai ilmu berarti menghargai setiap proses dan aturan yang konsisten. Dalam fungsi invers, setiap langkah aljabar yang kita lakukan mengajarkan sikap jujur, teliti, dan bernalar kritis.
+                        </p>
+                    </div>
+                    <div class="text-[11px] text-amber-800 font-semibold italic border-t border-amber-200/60 pt-3">
+                        "Barangsiapa menempuh jalan untuk mencari ilmu, Allah akan mudahkan baginya jalan menuju surga."
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center pt-4 border-t border-slate-200">
+                <button onclick="switchTab('stage2')" class="text-xs font-bold text-slate-600 hover:text-slate-800 flex items-center gap-1">
+                    <i data-lucide="chevron-left" class="w-4 h-4"></i> Kembali ke Tahap 2
+                </button>
+                <button onclick="markStageComplete(3); switchTab('stage4');" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-md">
+                    Lanjut ke Tahap Menerapkan <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- STAGE 4 CONTENT: ACTING / APPLYING -->
+        <div id="content-stage4" class="tab-content hidden space-y-6">
+            <div class="bg-gradient-to-r from-emerald-800 to-teal-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+                <div class="max-w-3xl space-y-3">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full text-emerald-200 text-xs font-semibold backdrop-blur-md">
+                        <i data-lucide="check-circle-2" class="w-4 h-4"></i> Tahap 4: Penerapan & Evaluasi
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Tantangan Studi Kasus Kehidupan Sehari-hari</h2>
+                    <p class="text-emerald-100 text-sm leading-relaxed">
+                        Uji pemahamanmu ("Now What?") dengan menyelesaikan permasalahan aljabar dan aplikasi nyata fungsi invers berikut ini!
+                    </p>
+                </div>
+            </div>
+
+            <!-- INTERACTIVE QUIZ & WORKSHEET FORM -->
+            <form id="quiz-form" onsubmit="evaluateQuiz(event)" class="space-y-6">
+
+                <!-- Problem 1: Linear Algebraic -->
+                <div class="glass-card rounded-3xl p-6 shadow-sm border border-slate-200 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">Soal 1: Konsep Aljabar</span>
+                        <span class="text-xs font-bold text-slate-400">Bobot: 25 Poin</span>
+                    </div>
+                    <p class="text-sm text-slate-800 font-medium">
+                        Diketahui sebuah fungsi linear $f(x) = 4x - 12$. Tentukan rumus fungsi invers $f^{-1}(x)$!
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <label class="p-3 rounded-xl border border-slate-200 cursor-pointer hover:bg-emerald-50/50 flex items-center gap-3 transition">
+                            <input type="radio" name="q1" value="A" class="accent-emerald-600">
+                            <span>A. $f^{-1}(x) = \frac{x + 12}{4}$</span>
+                        </label>
+                        <label class="p-3 rounded-xl border border-slate-200 cursor-pointer hover:bg-emerald-50/50 flex items-center gap-3 transition">
+                            <input type="radio" name="q1" value="B" class="accent-emerald-600">
+                            <span>B. $f^{-1}(x) = \frac{x - 12}{4}$</span>
+                        </label>
+                        <label class="p-3 rounded-xl border border-slate-200 cursor-pointer hover:bg-emerald-50/50 flex items-center gap-3 transition">
+                            <input type="radio" name="q1" value="C" class="accent-emerald-600">
+                            <span>C. $f^{-1}(x) = 4x + 12$</span>
+                        </label>
+                        <label class="p-3 rounded-xl border border-slate-200 cursor-pointer hover:bg-emerald-50/50 flex items-center gap-3 transition">
+                            <input type="radio" name="q1" value="D" class="accent-emerald-600">
+                            <span>D. $f^{-1}(x) = \frac{x + 4}{12}$</span>
+                        </label>
+                    </div>
+                    <div id="q1-feedback" class="hidden p-3 rounded-xl text-xs font-medium"></div>
+                </div>
+
+                <!-- Problem 2: Rational Algebraic -->
+                <div class="glass-card rounded-3xl p-6 shadow-sm border border-slate-200 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">Soal 2: Fungsi Rasional</span>
+                        <span class="text-xs font-bold text-slate-400">Bobot: 25 Poin</span>
+                    </div>
+                    <p class="text-sm text-slate-800 font-medium">
+                        Tentukan fungsi invers dari $f(x) = \dfrac{2x + 5}{x - 3}$ dengan syarat $x \neq 3$!
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <label class="p-3 rounded-xl border border-slate-200 cursor-pointer hover:bg-emerald-50/50 flex items-center gap-3 transition">
+                            <input type="radio" name="q1" value="A" class="accent-emerald-600">
+                            <span>A. $f^{-1}(x) = \dfrac{3x + 5}{x - 2}, \quad x \neq 2$</span>
+                        </label>
+                        <label class="p-3 rounded-xl border border-slate-200 cursor-pointer hover:bg-emerald-50/50 flex items-center gap-3 transition">
+                            <input type="radio" name="q2" value="B" class="accent-emerald-600">
+                            <span>B. $f^{-1}(x) = \dfrac{3x - 5}{x + 2}, \quad x \neq -2$</span>
+                        </label>
+                        <label class="p-3 rounded-xl border border-slate-200 cursor-pointer hover:bg-emerald-50/50 flex items-center gap-3 transition">
+                            <input type="radio" name="q2" value="C" class="accent-emerald-600">
+                            <span>C. $f^{-1}(x) = \dfrac{-3x + 5}{x - 2}, \quad x \neq 2$</span>
+                        </label>
+                        <label class="p-3 rounded-xl border border-slate-200 cursor-pointer hover:bg-emerald-50/50 flex items-center gap-3 transition">
+                            <input type="radio" name="q2" value="D" class="accent-emerald-600">
+                            <span>D. $f^{-1}(x) = \dfrac{2x - 5}{x + 3}, \quad x \neq -3$</span>
+                        </label>
+                    </div>
+                    <div id="q2-feedback" class="hidden p-3 rounded-xl text-xs font-medium"></div>
+                </div>
+
+                <!-- Problem 3: Real World Case 1 (Temperature Conversion) -->
+                <div class="glass-card rounded-3xl p-6 shadow-sm border border-slate-200 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full">Soal 3: Studi Kasus Konversi Suhu</span>
+                        <span class="text-xs font-bold text-slate-400">Bobot: 25 Poin</span>
+                    </div>
+                    <div class="p-4 bg-amber-50/80 rounded-2xl border border-amber-200 text-xs text-slate-700 leading-relaxed space-y-2">
+                        <p class="font-semibold text-slate-900">🔬 Kasus Laboratorium Kimia:</p>
+                        <p>
+                            Rumus konversi suhu dari Celsius ($C$) ke Fahrenheit ($F$) dinyatakan dengan rumus fungsi $F(C) = \frac{9}{5}C + 32$. Seorang siswa ingin membuat fungsi kebalikan $C(F)$ untuk menghitung derajat Celsius jika diketahui derajat Fahrenheit.
+                        </p>
+                    </div>
+                    <p class="text-sm text-slate-800 font-medium">
+                        Jika termometer Fahrenheit menunjukkan angka **$77^\circ\text{F}$**, berapa suhu benda tersebut dalam Celsius ($^\circ\text{C}$)?
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <input type="number" id="q3-ans" placeholder="Masukkan angka saja..." class="w-48 px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 outline-none">
+                        <span class="text-xs font-bold text-slate-600">°C</span>
+                    </div>
+                    <div id="q3-feedback" class="hidden p-3 rounded-xl text-xs font-medium"></div>
+                </div>
+
+                <!-- Problem 4: Real World Case 2 (Currency & Business) -->
+                <div class="glass-card rounded-3xl p-6 shadow-sm border border-slate-200 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full">Soal 4: Transaksi Valuta Asing</span>
+                        <span class="text-xs font-bold text-slate-400">Bobot: 25 Poin</span>
+                    </div>
+                    <div class="p-4 bg-amber-50/80 rounded-2xl border border-amber-200 text-xs text-slate-700 leading-relaxed space-y-2">
+                        <p class="font-semibold text-slate-900">✈️ Kasus Pembelian Buku Luar Negeri:</p>
+                        <p>
+                            Biaya total dalam Rupiah ($y$) untuk membeli buku seharga $x$ US Dollar termasuk biaya admin flat dikalkulasikan dengan fungsi $f(x) = 15.000x + 25.000$.
+                        </p>
+                    </div>
+                    <p class="text-sm text-slate-800 font-medium">
+                        Jika total uang Rupiah yang ditransfer siswa adalah **Rp 325.000,00**, berapa harga asli buku tersebut dalam US Dollar ($x$)?
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs font-bold text-slate-600">$</span>
+                        <input type="number" id="q4-ans" placeholder="Masukkan angka USD..." class="w-48 px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 outline-none">
+                    </div>
+                    <div id="q4-feedback" class="hidden p-3 rounded-xl text-xs font-medium"></div>
+                </div>
+
+                <!-- SUBMIT BUTTON -->
+                <div class="flex justify-center pt-4">
+                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3.5 rounded-2xl font-bold text-sm flex items-center gap-2 shadow-lg transition transform hover:-translate-y-0.5">
+                        <i data-lucide="check-square" class="w-5 h-5"></i> Submit Jawaban & Hitung Skor
+                    </button>
+                </div>
+            </form>
+
+            <!-- SCORE & CERTIFICATE SUMMARY SECTION -->
+            <div id="score-summary-box" class="hidden glass-card rounded-3xl p-6 sm:p-8 border border-emerald-300 bg-gradient-to-br from-emerald-50/80 to-teal-50/80 space-y-6 text-center">
+                <div class="inline-flex p-4 bg-emerald-100 text-emerald-800 rounded-full mb-2">
+                    <i data-lucide="award" class="w-10 h-10"></i>
+                </div>
+                <h3 class="text-2xl font-black text-slate-900">Hasil Evaluasi E-LKPD Kamu</h3>
+                
+                <div class="flex justify-center items-center gap-6">
+                    <div class="p-4 bg-white rounded-2xl shadow-sm border border-slate-200">
+                        <span class="text-xs text-slate-500 font-medium block">Total Skor</span>
+                        <span id="final-score-val" class="text-4xl font-extrabold text-emerald-600">0</span>
+                        <span class="text-xs text-slate-400">/ 100</span>
+                    </div>
+                    <div class="p-4 bg-white rounded-2xl shadow-sm border border-slate-200">
+                        <span class="text-xs text-slate-500 font-medium block">Predikat Cinta Ilmu</span>
+                        <span id="final-badge-val" class="text-sm font-bold text-amber-600">Pecinta Ilmu Sejati</span>
+                    </div>
+                </div>
+
+                <p id="final-summary-note" class="text-xs text-slate-600 max-w-lg mx-auto leading-relaxed"></p>
+
+                <div class="pt-4 flex justify-center gap-4">
+                    <button onclick="window.print()" class="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 shadow transition">
+                        <i data-lucide="printer" class="w-4 h-4"></i> Cetak / Export PDF Laporan
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-slate-200 py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 space-y-2">
+            <p>© 2026 E-LKPD Interaktif Matematika Fase F (Kelas XI) - Modul Fungsi Invers.</p>
+            <p class="text-slate-400">Dirancang dengan Pendekatan Experiential Learning & Panca Cinta (Cinta Ilmu)</p>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE APP LOGIC -->
+    <script>
+        const state = {
+            completedStages: new Set(),
+            stepSequence: [],
+            correctStepOrder: ['step-c', 'step-d', 'step-b', 'step-a'],
+            score: 0
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            updateMachineSimulation();
+            renderMath();
+        });
+
+        function renderMath() {
+            if (window.renderMathInElement) {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false}
+                    ],
+                    throwOnError: false
+                });
+            }
+        }
+
+        function switchTab(stageId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(`content-${stageId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-${stageId}`);
+            activeBtn.classList.add('active');
+            
+            renderMath();
+            window.scrollTo({ top: 120, behavior: 'smooth' });
+        }
+
+        function updateMachineSimulation() {
+            const rule = document.getElementById('machine-rule').value;
+            const x = parseInt(document.getElementById('input-x').value);
+            
+            document.getElementById('input-x-val').innerText = x;
+
+            let formulaText = "";
+            let processText = "";
+            let y = 0;
+
+            if (rule === 'linear1') {
+                formulaText = "$f(x) = 2x + 4$";
+                processText = `(2 × ${x}) + 4`;
+                y = (2 * x) + 4;
+            } else if (rule === 'linear2') {
+                formulaText = "$f(x) = 3x - 5$";
+                processText = `(3 × ${x}) - 5`;
+                y = (3 * x) - 5;
+            } else if (rule === 'rational') {
+                formulaText = "$f(x) = \\dfrac{x + 6}{2}$";
+                processText = `(${x} + 6) / 2`;
+                y = (x + 6) / 2;
+            }
+
+            const formulaEl = document.getElementById('formula-display');
+            formulaEl.innerHTML = formulaText;
+            document.getElementById('process-a-step').innerText = processText;
+            document.getElementById('output-y-val').innerText = y;
+            document.getElementById('target-y-val').innerText = y;
+
+            renderMath();
+
+            // Reset reverse feedback
+            document.getElementById('reverse-result-box').className = "p-3 rounded-xl border text-xs text-center transition bg-slate-100 border-slate-200 text-slate-600";
+            document.getElementById('reverse-result-box').innerText = "Klik salah satu urutan operasi di atas untuk menguji kebenaran mesin invers!";
+        }
+
+        function applyReverseOp(opType) {
+            const rule = document.getElementById('machine-rule').value;
+            const xOriginal = parseInt(document.getElementById('input-x').value);
+            const yTarget = parseInt(document.getElementById('target-y-val').innerText);
+            
+            const resultBox = document.getElementById('reverse-result-box');
+            let isCorrect = false;
+            let calculatedX = 0;
+
+            if (rule === 'linear1') {
+                // f(x) = 2x + 4 -> Inverse: (y - 4) / 2
+                if (opType === 'sub_then_div') {
+                    calculatedX = (yTarget - 4) / 2;
+                    isCorrect = true;
+                } else {
+                    calculatedX = (yTarget / 2) - 4;
+                    isCorrect = false;
+                }
+            } else if (rule === 'linear2') {
+                // f(x) = 3x - 5 -> Inverse: (y + 5) / 3
+                if (opType === 'sub_then_div') {
+                    calculatedX = (yTarget + 5) / 3;
+                    isCorrect = true;
+                } else {
+                    calculatedX = (yTarget / 3) + 5;
+                    isCorrect = false;
+                }
+            } else if (rule === 'rational') {
+                // f(x) = (x + 6)/2 -> Inverse: 2y - 6
+                if (opType === 'div_then_sub') {
+                    calculatedX = (2 * yTarget) - 6;
+                    isCorrect = true;
+                } else {
+                    calculatedX = (yTarget - 6) * 2;
+                    isCorrect = false;
+                }
+            }
+
+            if (isCorrect && calculatedX === xOriginal) {
+                resultBox.className = "p-3 rounded-xl border text-xs text-center font-bold bg-emerald-100 border-emerald-300 text-emerald-800";
+                resultBox.innerHTML = `🎉 BERHASIL! Nilai kembali menjadi x = ${calculatedX}. Kamu menemukan urutan kebalikan yang tepat!`;
+            } else {
+                resultBox.className = "p-3 rounded-xl border text-xs text-center font-bold bg-red-100 border-red-300 text-red-800";
+                resultBox.innerHTML = `❌ BELUM TEPAT! Hasil akhir = ${calculatedX} (tidak sama dengan nilai x awal = ${xOriginal}). Coba urutan yang satu lagi!`;
+            }
+        }
+
+        // STAGE 2: REFLECTION HANDLER
+        function handleReflectionSubmit(e) {
+            e.preventDefault();
+            const studentName = document.getElementById('student-name').value || "Siswa Tanpa Nama";
+            const q1 = document.getElementById('ref-q1').value;
+            const q2 = document.getElementById('ref-q2').value;
+
+            const wallStream = document.getElementById('reflection-wall-stream');
+            
+            const card = document.createElement('div');
+            card.className = "bg-amber-50/90 p-5 rounded-2xl border border-amber-200 shadow-sm space-y-3 animate-pulse-subtle";
+            card.innerHTML = `
+                <div class="flex items-center justify-between border-b border-amber-200/60 pb-2">
+                    <span class="font-bold text-xs text-amber-900 flex items-center gap-1">
+                        <i data-lucide="user-check" class="w-3.5 h-3.5"></i> ${studentName}
+                    </span>
+                    <span class="text-[10px] text-amber-700">Baru saja dikirim</span>
+                </div>
+                <p class="text-xs text-slate-700">
+                    <strong>Refleksi Kebalikan:</strong> ${q2}
+                </p>
+            `;
+
+            wallStream.prepend(card);
+            lucide.createIcons();
+            
+            alert('Refleksi kamu berhasil diposting ke Dinding Diskusi Kelas!');
+            markStageComplete(2);
+        }
+
+        // STAGE 3: ALGORITHM STEP BUILDER LOGIC
+        function selectStep(stepId) {
+            if (state.stepSequence.includes(stepId)) return;
+
+            state.stepSequence.push(stepId);
+            const stepBtn = document.getElementById(stepId);
+            stepBtn.classList.add('opacity-40', 'pointer-events-none');
+
+            renderDropZone();
+            checkStepSequence();
+        }
+
+        function renderDropZone() {
+            const dropZone = document.getElementById('drop-zone');
+            const placeholder = document.getElementById('drop-placeholder');
+
+            if (state.stepSequence.length > 0 && placeholder) {
+                placeholder.classList.add('hidden');
+            }
+
+            dropZone.innerHTML = '';
+            state.stepSequence.forEach((id, index) => {
+                const btnOriginal = document.getElementById(id);
+                const text = btnOriginal.querySelector('span').innerText;
+
+                const item = document.createElement('div');
+                item.className = "p-3 bg-white border border-indigo-200 rounded-xl text-xs font-semibold text-indigo-900 flex items-center gap-3 shadow-sm";
+                item.innerHTML = `
+                    <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 text-[10px] font-bold flex items-center justify-center flex-shrink-0">${index + 1}</span>
+                    <span class="flex-grow">${text}</span>
+                `;
+                dropZone.appendChild(item);
+            });
+        }
+
+        function resetStepSequence() {
+            state.stepSequence.forEach(id => {
+                const btn = document.getElementById(id);
+                btn.classList.remove('opacity-40', 'pointer-events-none');
+            });
+            state.stepSequence = [];
+            
+            const dropZone = document.getElementById('drop-zone');
+            dropZone.innerHTML = '<span id="drop-placeholder" class="text-xs text-slate-400 italic text-center block py-6">Klik opsi langkah di atas untuk memindahkannya ke sini secara urut...</span>';
+            
+            const feedback = document.getElementById('step-feedback');
+            feedback.classList.add('hidden');
+        }
+
+        function checkStepSequence() {
+            if (state.stepSequence.length === 4) {
+                const feedback = document.getElementById('step-feedback');
+                const isCorrect = state.stepSequence.every((val, index) => val === state.correctStepOrder[index]);
+
+                feedback.classList.remove('hidden');
+                if (isCorrect) {
+                    feedback.className = "p-3 rounded-xl text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300";
+                    feedback.innerHTML = "✨ HEBAT! Urutan algoritma penentuan fungsi invers yang kamu susun 100% BENAR!";
+                    markStageComplete(3);
+                } else {
+                    feedback.className = "p-3 rounded-xl text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300";
+                    feedback.innerHTML = "⚠️ Urutan masih kurang tepat. Ingat: Awali dengan pemisalan variabel y, lalu lakukan manipulasi aljabar!";
+                }
+            }
+        }
+
+        // STAGE 4: QUIZ EVALUATION
+        function evaluateQuiz(e) {
+            e.preventDefault();
+            let score = 0;
+
+            // Q1 Verification
+            const q1Val = document.querySelector('input[name="q1"]:checked')?.value;
+            const q1Feedback = document.getElementById('q1-feedback');
+            q1Feedback.classList.remove('hidden');
+            if (q1Val === 'A') {
+                score += 25;
+                q1Feedback.className = "p-3 rounded-xl text-xs font-medium bg-emerald-100 text-emerald-800";
+                q1Feedback.innerHTML = "Benar! $f(x) = 4x - 12 \\implies y + 12 = 4x \\implies x = \\dfrac{y + 12}{4} \\implies f^{-1}(x) = \\dfrac{x + 12}{4}$.";
+            } else {
+                q1Feedback.className = "p-3 rounded-xl text-xs font-medium bg-red-100 text-red-800";
+                q1Feedback.innerHTML = "Kurang tepat. Jawaban benar adalah A: $f^{-1}(x) = \\dfrac{x + 12}{4}$.";
+            }
+
+            // Q2 Verification
+            const q2Val = document.querySelector('input[name="q2"]:checked')?.value;
+            const q2Feedback = document.getElementById('q2-feedback');
+            q2Feedback.classList.remove('hidden');
+            if (q2Val === 'A') {
+                score += 25;
+                q2Feedback.className = "p-3 rounded-xl text-xs font-medium bg-emerald-100 text-emerald-800";
+                q2Feedback.innerHTML = "Benar! Menggunakan rumus $f(x) = \\dfrac{ax+b}{cx+d} \\implies f^{-1}(x) = \\dfrac{-dx+b}{cx-a}$ diperoleh $f^{-1}(x) = \\dfrac{3x + 5}{x - 2}, \\, x \\neq 2$.";
+            } else {
+                q2Feedback.className = "p-3 rounded-xl text-xs font-medium bg-red-100 text-red-800";
+                q2Feedback.innerHTML = "Kurang tepat. Jawaban benar adalah A: $f^{-1}(x) = \\dfrac{3x + 5}{x - 2}, \\, x \\neq 2$.";
+            }
+
+            // Q3 Verification (77°F -> (77-32)*5/9 = 25°C)
+            const q3Val = parseFloat(document.getElementById('q3-ans').value);
+            const q3Feedback = document.getElementById('q3-feedback');
+            q3Feedback.classList.remove('hidden');
+            if (q3Val === 25) {
+                score += 25;
+                q3Feedback.className = "p-3 rounded-xl text-xs font-medium bg-emerald-100 text-emerald-800";
+                q3Feedback.innerHTML = "Benar! $C(F) = \\dfrac{5}{9}(F - 32) \\implies C(77) = \\dfrac{5}{9}(77 - 32) = 25^\\circ\\text{C}$.";
+            } else {
+                q3Feedback.className = "p-3 rounded-xl text-xs font-medium bg-red-100 text-red-800";
+                q3Feedback.innerHTML = "Kurang tepat. Jawaban benar adalah $25^\\circ\\text{C}$.";
+            }
+
+            // Q4 Verification (325000 -> (325000-25000)/15000 = 20 USD)
+            const q4Val = parseFloat(document.getElementById('q4-ans').value);
+            const q4Feedback = document.getElementById('q4-feedback');
+            q4Feedback.classList.remove('hidden');
+            if (q4Val === 20) {
+                score += 25;
+                q4Feedback.className = "p-3 rounded-xl text-xs font-medium bg-emerald-100 text-emerald-800";
+                q4Feedback.innerHTML = "Benar! $x = f^{-1}(y) = \\dfrac{y - 25.000}{15.000} = \\dfrac{325.000 - 25.000}{15.000} = 20$ USD.";
+            } else {
+                q4Feedback.className = "p-3 rounded-xl text-xs font-medium bg-red-100 text-red-800";
+                q4Feedback.innerHTML = "Kurang tepat. Jawaban benar adalah $20 USD.";
+            }
+
+            renderMath();
+
+            // Display Score Summary Box
+            const summaryBox = document.getElementById('score-summary-box');
+            summaryBox.classList.remove('hidden');
+            document.getElementById('final-score-val').innerText = score;
+
+            let badge = "Pecinta Ilmu Matematika";
+            if (score === 100) badge = "Master De-Coder Fungsi Invers (100% Perfect)";
+            else if (score >= 75) badge = "Pecinta Ilmu Matematika Level Up";
+            
+            document.getElementById('final-badge-val').innerText = badge;
+            document.getElementById('final-summary-note').innerText = 
+                `Selamat! Kamu telah menyelesaikan seluruh 4 Tahap Experiential Learning pada E-LKPD Fungsi Invers ini. Semangatmu dalam mencintai ilmu adalah kunci keberhasilan belajar!`;
+
+            markStageComplete(4);
+            window.scrollTo({ top: summaryBox.offsetTop - 100, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
